@@ -24,7 +24,7 @@ class AuthController extends Controller
             'password'=>bcrypt($request->password)
         ]);
 
-        $token = $user->user()->createToken($this->tokenName)->plainTextToken;
+        $token = $user->createToken($this->tokenName)->plainTextToken;
 
         return response('', 201)->json([
             'user'=>$user,
@@ -40,13 +40,13 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if(!$user || !Hash::check($user->password, $request->password)){
+        if(!$user || !Hash::check($request->password, $user->password)){
             return response([
                 'message'=>'Credenciais inválidas'
-            ]);
+            ], 401);
         }
 
-        $token = $user->user()->createToken($this->tokenName)->plainTextToken;
+        $token = $user->createToken($this->tokenName)->plainTextToken;
 
         return response([
             'user'=>$user,
@@ -55,10 +55,10 @@ class AuthController extends Controller
     }
 
     public function logout(){
-        auth()->user()->tokens()->delete();
+        auth()->user()->currentAccessToken()->delete();
 
         return response([
             'message'=>'Logout efetuado com sucesso!'
-        ], 201);
+        ], 200);
     }
 }
