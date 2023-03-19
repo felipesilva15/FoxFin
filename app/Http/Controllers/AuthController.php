@@ -11,33 +11,44 @@ class AuthController extends Controller
 {
     private $tokenName = 'access_token';
 
+    public function index(){
+        return response()->json($users = User::all(), 200);
+    }
+
     public function register(Request $request){
+        // Valida os dados recebidos
         $request->validate([
             'name' => 'required|string|',
             'email' => 'required|string|unique:users|email',
             'password' => 'required|string|confirmed'
         ]);
 
+        // Cria o usuário no BD
         $user = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
             'password'=>bcrypt($request->password)
         ]);
 
-        $token = $user->createToken($this->tokenName)->plainTextToken;
+        // Define o retorno
+        $response = [
+            'id'=>$user->id,
+            'name'=>$user->name,
+            'email'=>$user->email,
+            'access_token'=>$user->createToken($this->tokenName)->plainTextToken
+        ];
 
-        return response()->json([
-            'user'=>$user,
-            'access_token'=>$token
-        ], 201);
+        return response()->json($response, 201);
     }
 
     public function login(Request $request){
+        // Valida os dados recebidos
         $request->validate([
             'email'=>'required|string',
             'password'=>'required|string'
         ]);
 
+        // Busca o usuário e checa as credenciais
         $user = User::where('email', $request->email)->first();
 
         if(!$user || !Hash::check($request->password, $user->password)){
@@ -46,19 +57,26 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken($this->tokenName)->plainTextToken;
+        // Define o retorno
+        $response = [
+            'id'=>$user->id,
+            'name'=>$user->name,
+            'email'=>$user->email,
+            'access_token'=>$user->createToken($this->tokenName)->plainTextToken
+        ];
 
-        return response()->json([
-            'user'=>$user,
-            'access_token'=>$token
-        ], 201);
+        return response()->json($response, 201);
     }
 
     public function logout(){
+        // Exclui o token do usuário ativo
         auth()->user()->currentAccessToken()->delete();
 
-        return response()->json([
+        // Define retorno
+        $response = [
             'message'=>'Logout efetuado com sucesso!'
-        ], 200);
+        ];
+
+        return response()->json($response, 200);
     }
 }
