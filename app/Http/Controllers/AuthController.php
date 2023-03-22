@@ -20,7 +20,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|',
             'email' => 'required|string|unique:users|email',
-            'password' => 'required|string|confirmed'
+            'password' => 'required|string|confirmed|min:6'
         ]);
 
         // Cria o usuário no BD
