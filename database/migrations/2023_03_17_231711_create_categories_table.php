@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name', 40);
+            $table->string('material_icon', 40);
             $table->foreignId('operation_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->tinyInteger('inactive');
