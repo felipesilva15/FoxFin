@@ -12,7 +12,7 @@ class AuthController extends Controller
     private $tokenName = 'access_token';
 
     public function index(){
-        return response()->json($users = User::all(), 200);
+        return response()->json(User::all(), 200);
     }
 
     public function register(Request $request){
@@ -54,7 +54,7 @@ class AuthController extends Controller
         if(!$user || !Hash::check($request->password, $user->password)){
             return response()->json([
                 'message'=>'Credenciais inválidas'
-            ], 401);
+            ], 400);
         }
 
         // Define o retorno
