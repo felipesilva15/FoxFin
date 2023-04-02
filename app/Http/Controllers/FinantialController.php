@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Operation;
 
-class OperationController extends Controller
+class FinantialController extends Controller
 {
     public function index(){
-        return response()->json(Operation::all());
+
     }
 
     public function show($id){
