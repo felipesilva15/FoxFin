@@ -8,6 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class Operation extends Model
 {
     use HasFactory;
-
-    protected $table = 'TB_OPERACAO';
 }
